@@ -66,7 +66,7 @@ private:
 	IAudioSessionControl *_AudioSessionControl{nullptr};
 	IMMDeviceEnumerator *_DeviceEnumerator{nullptr};
 	LONG _EngineLatencyInMS{0};
-	bool _InStreamSwitch;
+	bool _InStreamSwitch{false};
 
 	bool InitializeStreamSwitch();
 	void TerminateStreamSwitch();

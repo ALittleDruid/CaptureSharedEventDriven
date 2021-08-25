@@ -18,8 +18,7 @@
 CWASAPICapture::CWASAPICapture(IMMDevice *Endpoint, bool EnableStreamSwitch, ERole EndpointRole)
 	: _Endpoint(Endpoint),
 	  _EnableStreamSwitch(EnableStreamSwitch),
-	  _EndpointRole(EndpointRole),
-	  _InStreamSwitch(false)
+	  _EndpointRole(EndpointRole)
 {
 	_Endpoint->AddRef(); // Since we're holding a copy of the endpoint, take a
 						 // reference to it.  It'll be released in Shutdown();
