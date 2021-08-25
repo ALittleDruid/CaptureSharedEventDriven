@@ -86,6 +86,10 @@ bool ParseCommandLine(int argc, wchar_t *argv[], const CommandLineSwitch Switche
 					case CommandLineSwitch::SwitchTypeInteger:
 					{
 						wchar_t *endValue;
+						if (!switchValue)
+						{
+							break;
+						}
 						long value = wcstoul(switchValue, &endValue, 0);
 						if (value == ULONG_MAX || value == 0 || (*endValue != L'\0' && !iswspace(*endValue)))
 						{

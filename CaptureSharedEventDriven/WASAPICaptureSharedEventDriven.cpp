@@ -518,7 +518,7 @@ int wmain(int argc, wchar_t *argv[])
 			//  data.  That means we're going to have TargetDuration*samples/second
 			//  frames multiplied by the frame size.
 			//
-			size_t captureBufferSize = capturer->SamplesPerSecond() * TargetDurationInSec * capturer->FrameSize();
+			size_t captureBufferSize = size_t(1) * capturer->SamplesPerSecond() * TargetDurationInSec * capturer->FrameSize();
 			BYTE *captureBuffer = new (std::nothrow) BYTE[captureBufferSize];
 
 			if (captureBuffer == NULL)

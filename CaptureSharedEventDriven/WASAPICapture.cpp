@@ -16,21 +16,9 @@
 //
 
 CWASAPICapture::CWASAPICapture(IMMDevice *Endpoint, bool EnableStreamSwitch, ERole EndpointRole)
-	: _RefCount(1),
-	  _Endpoint(Endpoint),
-	  _AudioClient(NULL),
-	  _CaptureClient(NULL),
-	  _CaptureThread(NULL),
-	  _ShutdownEvent(NULL),
-	  _MixFormat(NULL),
-	  _AudioSamplesReadyEvent(NULL),
-	  _CurrentCaptureIndex(0),
+	: _Endpoint(Endpoint),
 	  _EnableStreamSwitch(EnableStreamSwitch),
 	  _EndpointRole(EndpointRole),
-	  _StreamSwitchEvent(NULL),
-	  _StreamSwitchCompleteEvent(NULL),
-	  _AudioSessionControl(NULL),
-	  _DeviceEnumerator(NULL),
 	  _InStreamSwitch(false)
 {
 	_Endpoint->AddRef(); // Since we're holding a copy of the endpoint, take a
@@ -40,7 +28,7 @@ CWASAPICapture::CWASAPICapture(IMMDevice *Endpoint, bool EnableStreamSwitch, ERo
 //
 //  Empty destructor - everything should be released in the Shutdown() call.
 //
-CWASAPICapture::~CWASAPICapture(void) {}
+CWASAPICapture::~CWASAPICapture() {}
 
 //
 //  Initialize WASAPI in event driven mode, associate the audio client with our
@@ -50,7 +38,7 @@ CWASAPICapture::~CWASAPICapture(void) {}
 bool CWASAPICapture::InitializeAudioEngine()
 {
 	HRESULT hr = _AudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-										  _EngineLatencyInMS * 10000, 0, _MixFormat, NULL);
+										  _EngineLatencyInMS * 10000ll, 0, _MixFormat, NULL);
 
 	if (FAILED(hr))
 	{
@@ -99,7 +87,7 @@ bool CWASAPICapture::LoadFormat()
 		return false;
 	}
 
-	_FrameSize = (_MixFormat->wBitsPerSample / 8) * _MixFormat->nChannels;
+	_FrameSize = (_MixFormat->wBitsPerSample / 8ll) * _MixFormat->nChannels;
 	return true;
 }
 
@@ -404,7 +392,7 @@ DWORD CWASAPICapture::DoCaptureThread()
 			break;
 		}
 	}
-	if (!DisableMMCSS)
+	if (!DisableMMCSS && mmcssHandle)
 	{
 		AvRevertMmThreadCharacteristics(mmcssHandle);
 	}

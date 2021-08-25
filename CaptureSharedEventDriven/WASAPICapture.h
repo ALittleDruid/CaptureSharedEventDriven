@@ -31,28 +31,28 @@ public:
 	STDMETHOD_(ULONG, Release)();
 
 private:
-	~CWASAPICapture(void); // Destructor is private to prevent accidental deletion.
-	LONG _RefCount;
+	~CWASAPICapture(); // Destructor is private to prevent accidental deletion.
+	LONG _RefCount{1};
 	//
 	//  Core Audio Capture member variables.
 	//
 	IMMDevice *_Endpoint;
-	IAudioClient *_AudioClient;
-	IAudioCaptureClient *_CaptureClient;
+	IAudioClient *_AudioClient{nullptr};
+	IAudioCaptureClient *_CaptureClient{nullptr};
 
-	HANDLE _CaptureThread;
-	HANDLE _ShutdownEvent;
-	HANDLE _AudioSamplesReadyEvent;
-	WAVEFORMATEX *_MixFormat;
-	size_t _FrameSize;
-	UINT32 _BufferSize;
+	HANDLE _CaptureThread{nullptr};
+	HANDLE _ShutdownEvent{nullptr};
+	HANDLE _AudioSamplesReadyEvent{nullptr};
+	WAVEFORMATEX *_MixFormat{nullptr};
+	size_t _FrameSize{0};
+	UINT32 _BufferSize{0};
 
 	//
 	//  Capture buffer management.
 	//
-	BYTE *_CaptureBuffer;
-	size_t _CaptureBufferSize;
-	size_t _CurrentCaptureIndex;
+	BYTE *_CaptureBuffer{nullptr};
+	size_t _CaptureBufferSize{0};
+	size_t _CurrentCaptureIndex{0};
 
 	static DWORD __stdcall WASAPICaptureThread(LPVOID Context);
 	DWORD DoCaptureThread();
@@ -61,11 +61,11 @@ private:
 	//
 	bool _EnableStreamSwitch;
 	ERole _EndpointRole;
-	HANDLE _StreamSwitchEvent;		   // Set when the current session is disconnected or the default device changes.
-	HANDLE _StreamSwitchCompleteEvent; // Set when the default device changed.
-	IAudioSessionControl *_AudioSessionControl;
-	IMMDeviceEnumerator *_DeviceEnumerator;
-	LONG _EngineLatencyInMS;
+	HANDLE _StreamSwitchEvent{nullptr}; // Set when the current session is disconnected or the default device changes.
+	HANDLE _StreamSwitchCompleteEvent{nullptr}; // Set when the default device changed.
+	IAudioSessionControl *_AudioSessionControl{nullptr};
+	IMMDeviceEnumerator *_DeviceEnumerator{nullptr};
+	LONG _EngineLatencyInMS{0};
 	bool _InStreamSwitch;
 
 	bool InitializeStreamSwitch();
