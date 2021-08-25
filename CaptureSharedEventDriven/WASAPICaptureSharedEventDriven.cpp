@@ -20,9 +20,10 @@
 #include <functiondiscoverykeys.h>
 
 #include "CmdLine.h"
+#include <locale>
 
 int TargetLatency = 20;
-int TargetDurationInSec = 30;
+int TargetDurationInSec = 10;
 bool ShowHelp;
 bool UseConsoleDevice;
 bool UseCommunicationsDevice;
@@ -154,7 +155,7 @@ bool PickDevice(IMMDevice **DeviceToUse, bool *IsDefaultDevice, ERole *DefaultDe
 		//  The user didn't specify an output device, prompt the user for a device
 		//  and use that.
 		//
-		hr = deviceEnumerator->EnumAudioEndpoints(eCapture, DEVICE_STATE_ACTIVE, &deviceCollection);
+		hr = deviceEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &deviceCollection);
 		if (FAILED(hr))
 		{
 			printf("Unable to retrieve device collection: %x\n", hr);
@@ -184,7 +185,8 @@ bool PickDevice(IMMDevice **DeviceToUse, bool *IsDefaultDevice, ERole *DefaultDe
 				retValue = false;
 				goto Exit;
 			}
-			printf("    %d:  %S\n", i + 3, deviceName);
+			_wsetlocale(LC_ALL, L"chs");
+			wprintf(L"    %d:  %s\n", i + 3, deviceName);
 			free(deviceName);
 		}
 		wchar_t choice[10];
@@ -248,7 +250,7 @@ bool PickDevice(IMMDevice **DeviceToUse, bool *IsDefaultDevice, ERole *DefaultDe
 		{
 			deviceRole = eMultimedia;
 		}
-		hr = deviceEnumerator->GetDefaultAudioEndpoint(eCapture, deviceRole, &device);
+		hr = deviceEnumerator->GetDefaultAudioEndpoint(eRender, deviceRole, &device);
 		if (FAILED(hr))
 		{
 			printf("Unable to get default device for role %d: %x\n", deviceRole, hr);

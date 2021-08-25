@@ -49,8 +49,8 @@ CWASAPICapture::~CWASAPICapture(void) {}
 //
 bool CWASAPICapture::InitializeAudioEngine()
 {
-	HRESULT hr =
-		_AudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST, _EngineLatencyInMS * 10000, 0, _MixFormat, NULL);
+	HRESULT hr = _AudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
+										  _EngineLatencyInMS * 10000, 0, _MixFormat, NULL);
 
 	if (FAILED(hr))
 	{
@@ -560,7 +560,7 @@ bool CWASAPICapture::HandleStreamSwitchEvent()
 	//  switch.  If there IS a new device,
 	//          we should be able to retrieve it.
 	//
-	hr = _DeviceEnumerator->GetDefaultAudioEndpoint(eCapture, _EndpointRole, &_Endpoint);
+	hr = _DeviceEnumerator->GetDefaultAudioEndpoint(eRender, _EndpointRole, &_Endpoint);
 	if (FAILED(hr))
 	{
 		printf("Unable to retrieve new default device during stream switch: %x\n", hr);
@@ -694,7 +694,8 @@ HRESULT CWASAPICapture::OnSessionDisconnected(AudioSessionDisconnectReason Disco
 //
 HRESULT CWASAPICapture::OnDefaultDeviceChanged(EDataFlow Flow, ERole Role, LPCWSTR /*NewDefaultDeviceId*/)
 {
-	if (Flow == eCapture && Role == _EndpointRole)
+	printf("OnDefaultDeviceChanged %d %d, what should i do\n", Flow, Role);
+	if (Flow == eRender && Role == _EndpointRole)
 	{
 		//
 		//  The default capture device for our configuredf role was changed.
